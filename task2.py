@@ -52,15 +52,17 @@ def decrypt_text(encrypted_text: str, key_dict: dict) -> str:
 
 def main():
     try:
-        encrypted_text = read_file('task2/cod1.txt')
+        constants = read_json('consts.json')
+
+        encrypted_text = read_file(constants['cod1'])
         new_freq = frequency_analysis(encrypted_text)
-        write_json('task2/freq_cod1.json', new_freq)
-        freaq1 = read_json('task2/frequencies.json')
-        freaq2 = read_json('task2/freq_cod1.json')
+        write_json(constants['freq_cod1'], new_freq)
+        freaq1 = read_json(constants['frequencies'])
+        freaq2 = read_json(constants['freq_cod1'])
         keys = key_dict(freaq1, freaq2)
-        write_json('task2/keys.json', keys)
+        write_json(constants['keys'], keys)
         decrypted_text = decrypt_text(encrypted_text, keys)
-        write_file('task2/decrypted.txt', decrypted_text)
+        write_file(constants['decrypted_text'], decrypted_text)
 
     except Exception as e:
         print(e)

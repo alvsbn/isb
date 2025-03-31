@@ -1,0 +1,13 @@
+{
+  "alphabet": "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+
+  "key": "task1/key.json",
+  "plain_text": "task1/plain_text.txt",
+  "encrypted_text": "task1/encrypted_text.txt",
+
+  "cod1": "task2/cod1.txt",
+  "freq_cod1": "task2/freq_cod1.json",
+  "frequencies": "task2/frequencies.json",
+  "keys": "task2/keys.json",
+  "decrypted_text": "task2/decrypted_text.txt"
+}

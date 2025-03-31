@@ -24,6 +24,7 @@ def write_file(file_name: str, text: str) -> None:
     except:
         raise IOError(f"Couldn't write to a file")
 
+
 def сaesar_cipher(plain_text, key, alphabet):
     text = plain_text.lower()
     key_length = len(key)
@@ -41,14 +42,14 @@ def сaesar_cipher(plain_text, key, alphabet):
 
 def main():
     try:
-        constants = read_json('task1/consts.json')
-        key = read_json('task1/key.json')
-        plain_text = read_file('task1/plain_text.txt')
+        constants = read_json('consts.json')
+
+        key = read_json(constants['key'])
+        plain_text = read_file(constants['plain_text'])
 
         encrypted_text = сaesar_cipher(plain_text, key['key'], constants['alphabet'])
-        write_file('task1/encrypted_text.txt', encrypted_text)
+        write_file(constants['encrypted_text'], encrypted_text)
 
-        print('The encrypted text is in the encrypted_text.txt')
     except Exception as e:
         print(e)
 
