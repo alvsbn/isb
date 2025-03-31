@@ -1,8 +1,15 @@
 import json
+
 from task1 import read_json, read_file, write_file
 
 
 def write_json(file_name: str, text: dict) -> None:
+    """
+    Writes the content to a json file
+    :param file_name: file name
+    :param text: text
+    :return: None
+    """
     try:
         with open(file_name, 'w', encoding='utf-8') as file:
             json.dump(text, file, ensure_ascii=False, indent=4)
@@ -10,12 +17,17 @@ def write_json(file_name: str, text: dict) -> None:
         raise IOError(f"Couldn't write to a file")
 
 
-def frequency_analysis(file_name: str) -> dict:
-    file_name = file_name.replace("\n", "")
-    total_chars = len(file_name)
+def frequency_analysis(text: str) -> dict:
+    """
+    Performs frequency analysis of symbols
+    :param text: text
+    :return: dictionary
+    """
+    text = text.replace("\n", "")
+    total_chars = len(text)
     freq = {}
 
-    for char in file_name:
+    for char in text:
         freq[char] = freq.get(char, 0) + 1
 
     for char in freq:
@@ -26,6 +38,12 @@ def frequency_analysis(file_name: str) -> dict:
     return dict(sorted_freq)
 
 def key_dict(freq1: dict, freq2: dict) -> dict:
+    """
+    Creates a dictionary of comparisons between two frequency distributions
+    :param freq1: the first frequency distribution
+    :param freq2: the second frequency distribution
+    :return: dictionary with keys
+    """
     new_dict = {}
     keys1 = list(freq1.keys())
     keys2 = list(freq2.keys())
@@ -39,15 +57,21 @@ def key_dict(freq1: dict, freq2: dict) -> dict:
 
 
 def decrypt_text(encrypted_text: str, key_dict: dict) -> str:
-     decrypted_text = ""
+    """
+    Decrypts text using a dictionary with keys
+    :param encrypted_text: encrypted text
+    :param key_dict: dictionary with keys
+    :return: decrypt text
+    """
+    decrypted_text = ""
 
-     for char in encrypted_text:
-         if char in key_dict:
+    for char in encrypted_text:
+        if char in key_dict:
             decrypted_text += key_dict[char]
-         else:
+        else:
             decrypted_text += char
 
-     return decrypted_text
+    return decrypted_text
 
 
 def main():
@@ -57,9 +81,9 @@ def main():
         encrypted_text = read_file(constants['cod1'])
         new_freq = frequency_analysis(encrypted_text)
         write_json(constants['freq_cod1'], new_freq)
-        freaq1 = read_json(constants['frequencies'])
-        freaq2 = read_json(constants['freq_cod1'])
-        keys = key_dict(freaq1, freaq2)
+        freq1 = read_json(constants['frequencies'])
+        freq2 = read_json(constants['freq_cod1'])
+        keys = key_dict(freq1, freq2)
         write_json(constants['keys'], keys)
         decrypted_text = decrypt_text(encrypted_text, keys)
         write_file(constants['decrypted_text'], decrypted_text)
