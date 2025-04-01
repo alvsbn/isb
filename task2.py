@@ -1,20 +1,4 @@
-import json
-
-from task1 import read_json, read_file, write_file
-
-
-def write_json(file_name: str, text: dict) -> None:
-    """
-    Writes the content to a json file
-    :param file_name: file name
-    :param text: text
-    :return: None
-    """
-    try:
-        with open(file_name, 'w', encoding='utf-8') as file:
-            json.dump(text, file, ensure_ascii=False, indent=4)
-    except:
-        raise IOError(f"Couldn't write to a file")
+from work_with_files import read_json, read_file, write_file, write_json
 
 
 def frequency_analysis(text: str) -> dict:
