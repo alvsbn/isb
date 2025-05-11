@@ -1,5 +1,7 @@
 import math
 
+from scipy.special import gammainc
+
 
 def frequency_bit_test(sequence: str) -> float:
     n = len(sequence)
@@ -28,3 +30,36 @@ def identical_consecutive_bits_test(sequence: str) -> float:
         return p_value
 
 
+def longest_sequence_of_ones_test(sequence: str) -> float:
+    m = 8
+    v = [0, 0, 0, 0]
+    pi = [0.2148, 0.3672, 0.2305, 0.1875]
+
+    blocks = [sequence[i:i + m] for i in range(0, len(sequence), m)]
+
+    for block in blocks:
+        counter = 0
+        ones_count = 0
+
+        for i in block:
+            if i == '1':
+                counter += 1
+                ones_count = max(ones_count, counter)
+            else:
+                counter = 0
+        match ones_count:
+            case 0 | 1:
+                v[0] += 1
+            case 2:
+                v[1] += 1
+            case 3:
+                v[2] += 1
+            case _:
+                v[3] += 1
+
+    chi_square = 0
+    for i in range(0, 4):
+        chi_square += (((v[i] - 16 * pi[i]) ** 2) / (16 * pi[i]))
+
+    p_value = gammainc(3 / 2,chi_square / 2)
+    return p_value
