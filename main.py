@@ -1,5 +1,6 @@
-from work_with_files import read_file, read_json, write_json
 from tests import frequency_bit_test, identical_consecutive_bits_test, longest_sequence_of_ones_test
+from work_with_files import read_file, read_json, write_json
+
 
 def main():
     try:

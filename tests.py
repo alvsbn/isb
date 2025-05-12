@@ -4,6 +4,11 @@ from scipy.special import gammainc
 
 
 def frequency_bit_test(sequence: str) -> float:
+    """
+    Frequency bit test
+    :param sequence: bit sequence
+    :return: p-value
+    """
     n = len(sequence)
     x = 0
     for i in sequence:
@@ -19,6 +24,11 @@ def frequency_bit_test(sequence: str) -> float:
 
 
 def identical_consecutive_bits_test(sequence: str) -> float:
+    """
+    Test for identical consecutive bits
+    :param sequence: bit sequence
+    :return: p-value
+    """
     n = len(sequence)
     zeta = sequence.count('1') / n
 
@@ -30,10 +40,15 @@ def identical_consecutive_bits_test(sequence: str) -> float:
         return p_value
 
 
-def longest_sequence_of_ones_test(sequence: str) -> float:
-    m = 8
+def longest_sequence_of_ones_test(sequence: str, pi: list, m: int) -> float:
+    """
+    Test for the longest sequence of ones in a block
+    :param sequence: bit sequence
+    :param pi: list of probabilities
+    :param m: block size
+    :return: p-value
+    """
     v = [0, 0, 0, 0]
-    pi = [0.2148, 0.3672, 0.2305, 0.1875]
 
     blocks = [sequence[i:i + m] for i in range(0, len(sequence), m)]
 
@@ -61,5 +76,5 @@ def longest_sequence_of_ones_test(sequence: str) -> float:
     for i in range(0, 4):
         chi_square += (((v[i] - 16 * pi[i]) ** 2) / (16 * pi[i]))
 
-    p_value = gammainc(3 / 2,chi_square / 2)
+    p_value = gammainc(3 / 2, chi_square / 2)
     return p_value
