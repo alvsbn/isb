@@ -130,13 +130,14 @@ def main() -> None:
 
         match (args.generation, args.encryption, args.decryption, args.key_size):
             case (True, False, False, None):
-                print(f"Запуск генерации ключей ({settings['key_size']} бит)")
+                print(f"Запуск генерации ключей ({settings['key_size']} бит)...")
                 generate_keys(
                     settings['key_size'],
                     settings['public_key'],
                     settings['private_key'],
                     settings['encrypted_symmetric_key']
                 )
+                print("Генерация ключей завершена успешно!")
 
             case (False, True, False, None):
                 print("Запуск шифрования данных...")
