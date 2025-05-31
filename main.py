@@ -2,7 +2,7 @@ from asymmetric_cripto import AsymmetricEncryption
 from symmetric_crypto import SymmetricalEncryption
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
-from work_with_files import read_binary_file, write_binary_file, read_json
+from work_with_files import read_binary_file, write_binary_file, read_json, write_json
 import argparse
 
 
@@ -71,6 +71,24 @@ def decrypt_data(encrypted_text_path: str,
         raise RuntimeError(f"Ошибка в процессе дешифрования данных: {str(e)}")
 
 
+def update_key_size(key_size: int) -> None:
+    """
+    Изменяет размер ключа в settings.json
+    :param key_size: новый размер ключа
+    """
+    try:
+        if key_size not in [128, 192, 256]:
+            raise ValueError("Размер ключа не подходит. Допустимые значения: 128, 192, 256")
+
+        settings = read_json('settings.json')
+        settings['key_size'] = key_size
+        write_json('settings.json', settings)
+        print(f"Размер ключа изменен на {key_size} бит")
+
+    except Exception as e:
+        raise RuntimeError(f"Ошибка при изменении размера ключа: {str(e)}")
+
+
 def main() -> None:
     try:
         parser = argparse.ArgumentParser()
@@ -79,43 +97,46 @@ def main() -> None:
         group.add_argument('-gen', '--generation', action='store_true', help='Режим генерации ключей')
         group.add_argument('-enc', '--encryption', action='store_true', help='Режим шифрования')
         group.add_argument('-dec', '--decryption', action='store_true', help='Режим дешифрования')
+        group.add_argument('-key','--key-size', type=int, help='Изменить размер ключа')
 
         args = parser.parse_args()
 
         settings = read_json('settings.json')
 
-        match (args.generation, args.encryption, args.decryption):
-            case (True, False, False):
-                print("Запущен режим генерации ключей")
+        match (args.generation, args.encryption, args.decryption, args.key_size):
+            case (True, False, False, None):
+                print(f"Запуск генерации ключей ({settings['key_size']} бит)")
                 generate_keys(
                     settings['key_size'],
                     settings['public_key'],
                     settings['private_key'],
                     settings['encrypted_symmetric_key']
                 )
-                print("Генерация ключей завершена")
 
-            case (False, True, False):
-                print("Запущен режим шифрования")
+            case (False, True, False, None):
+                print("Запуск шифрования данных...")
                 encrypt_data(
                     settings['original_text'],
                     settings['private_key'],
                     settings['encrypted_symmetric_key'],
                     settings['encrypted_text']
                 )
-                print("Шифрование завершено")
+                print("Шифрование завершено успешно!")
 
-            case (False, False, True):
-                print("Запущен режим дешифрования")
+            case (False, False, True, None):
+                print("Запуск дешифрования данных...")
                 decrypt_data(
                     settings['encrypted_text'],
                     settings['private_key'],
                     settings['encrypted_symmetric_key'],
                     settings['decrypted_text']
                 )
-                print("Дешифрование завершено")
+                print("Дешифрование завершено успешно!")
+
+            case (False, False, False, size):
+                update_key_size(size)
             case _:
-                raise ValueError("Не выбран режим работы")
+                raise ValueError("Неверная комбинация режимов работы")
 
     except Exception as e:
         print(f"Ошибка: {str(e)}")
