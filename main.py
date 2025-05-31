@@ -1,9 +1,11 @@
+import argparse
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+
 from asymmetric_cripto import AsymmetricEncryption
 from symmetric_crypto import SymmetricalEncryption
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.backends import default_backend
 from work_with_files import read_binary_file, write_binary_file, read_json, write_json
-import argparse
 
 
 def generate_keys(key_size, public_key_path: str,
