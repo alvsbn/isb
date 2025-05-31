@@ -7,7 +7,15 @@ import argparse
 
 
 def generate_keys(key_size, public_key_path: str,
-                  private_key_path: str, encrypted_symmetric_key_path: str ) -> None:
+                  private_key_path: str,
+                  encrypted_symmetric_key_path: str ) -> None:
+    """
+    Генерирует все ключи
+    :param key_size: размер симметричного ключа
+    :param public_key_path: путь для сохранения публичного RSA ключа
+    :param private_key_path: путь для сохранения приватного RSA ключа
+    :param encrypted_symmetric_key_path: путь для сохранения зашифрованного симметричного ключа
+    """
     try:
         symmetric_key = SymmetricalEncryption.generate_key(key_size)
         private_key, public_key = AsymmetricEncryption.generate_rsa_keys()
@@ -29,6 +37,13 @@ def encrypt_data(original_text_path: str,
                  private_key_path: str,
                  encrypted_symmetric_key_path: str,
                  encrypt_text_path: str) -> None:
+    """
+    Шифрует данные
+    :param original_text_path: путь к файлу с исходными данными для шифрования
+    :param private_key_path: путь к файлу с приватным RSA ключом
+    :param encrypted_symmetric_key_path: путь к файлу с зашифрованным симметричным ключом
+    :param encrypt_text_path: путь для сохранения зашифрованных данных
+    """
     try:
         original_text = read_binary_file(original_text_path)
         private_key_bytes = read_binary_file(private_key_path)
@@ -52,6 +67,14 @@ def decrypt_data(encrypted_text_path: str,
                  private_key_path: str,
                  encrypted_symmetric_key_path: str,
                  decrypted_text_path: str) -> None:
+    """
+    Дешифрует данные
+    :param encrypted_text_path: путь к файлц с зашифрованными данными
+    :param private_key_path: путь к файлу с приватным RSA ключом
+    :param encrypted_symmetric_key_path: путь к файлу с зашифрованным симметричным ключом
+    :param decrypted_text_path: путь к файлу для сохранения расшифрованных данных
+    :return:
+    """
     try:
         encrypted_text = read_binary_file(encrypted_text_path)
         private_key_bytes = read_binary_file(private_key_path)
