@@ -3,6 +3,7 @@ from symmetric_crypto import SymmetricalEncryption
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
 from work_with_files import read_binary_file, write_binary_file, read_json
+import argparse
 
 
 def generate_keys(key_size, public_key_path: str,
@@ -67,4 +68,57 @@ def decrypt_data(encrypted_text_path: str,
         decrypted_text = SymmetricalEncryption.decrypt_data(encrypted_text, symmetric_key)
         write_binary_file(decrypted_text_path, decrypted_text)
     except Exception as e:
-        raise RuntimeError(f"Ошибка в процессе расшифровывания данных: {str(e)}")
+        raise RuntimeError(f"Ошибка в процессе дешифрования данных: {str(e)}")
+
+
+def main() -> None:
+    try:
+        parser = argparse.ArgumentParser()
+
+        group = parser.add_mutually_exclusive_group(required=True)
+        group.add_argument('-gen', '--generation', action='store_true', help='Режим генерации ключей')
+        group.add_argument('-enc', '--encryption', action='store_true', help='Режим шифрования')
+        group.add_argument('-dec', '--decryption', action='store_true', help='Режим дешифрования')
+
+        args = parser.parse_args()
+
+        settings = read_json('settings.json')
+
+        match (args.generation, args.encryption, args.decryption):
+            case (True, False, False):
+                print("Запущен режим генерации ключей")
+                generate_keys(
+                    settings['key_size'],
+                    settings['public_key'],
+                    settings['private_key'],
+                    settings['encrypted_symmetric_key']
+                )
+                print("Генерация ключей завершена")
+
+            case (False, True, False):
+                print("Запущен режим шифрования")
+                encrypt_data(
+                    settings['original_text'],
+                    settings['private_key'],
+                    settings['encrypted_symmetric_key'],
+                    settings['encrypted_text']
+                )
+                print("Шифрование завершено")
+
+            case (False, False, True):
+                print("Запущен режим дешифрования")
+                decrypt_data(
+                    settings['encrypted_text'],
+                    settings['private_key'],
+                    settings['encrypted_symmetric_key'],
+                    settings['decrypted_text']
+                )
+                print("Дешифрование завершено")
+            case _:
+                raise ValueError("Не выбран режим работы")
+
+    except Exception as e:
+        print(f"Ошибка: {str(e)}")
+
+if __name__ == '__main__':
+    main()
